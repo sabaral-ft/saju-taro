@@ -8,7 +8,7 @@ import { requestTicket, getTicketPrices, checkAccess } from '@/lib/ticket-servic
 export default function PaymentPage() {
   const router = useRouter();
   const [uid, setUid] = useState<string | null>(null);
-  const [selected, setSelected] = useState<'30min' | '1hour' | '1day'>('30min');
+  const [selected, setSelected] = useState<'20min' | '1hour'>('20min');
   const [status, setStatus] = useState<'select' | 'requested' | 'active'>('select');
   const [loading, setLoading] = useState(false);
   const prices = getTicketPrices();

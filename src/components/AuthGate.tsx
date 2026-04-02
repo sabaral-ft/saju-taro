@@ -5,7 +5,7 @@ import { onAuth, getUserProfile, logoutUser } from '@/lib/auth-service';
 import { checkAccess } from '@/lib/ticket-service';
 
 const TRIAL_KEY = 'saju_free_trial';
-const TRIAL_DURATION = 60; // 60초 = 1분
+const TRIAL_DURATION = 90; // 90초 = 1분 30초
 
 function getTrialState(): { started: boolean; remaining: number } {
   const raw = localStorage.getItem(TRIAL_KEY);

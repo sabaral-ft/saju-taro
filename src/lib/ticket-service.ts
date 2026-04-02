@@ -7,7 +7,7 @@ import {
 
 export interface Ticket {
   uid: string;
-  type: '30min' | '1hour' | '1day';
+  type: '20min' | '1hour';
   status: 'pending' | 'approved' | 'expired' | 'rejected';
   requestedAt: number;
   approvedAt?: number;
@@ -22,9 +22,8 @@ export interface FreeTrialInfo {
 }
 
 const TICKET_PRICES: Record<string, { label: string; amount: number; minutes: number }> = {
-  '30min': { label: '30분 이용권', amount: 2000, minutes: 30 },
+  '20min': { label: '20분 이용권', amount: 2000, minutes: 20 },
   '1hour': { label: '1시간 이용권', amount: 3000, minutes: 60 },
-  '1day':  { label: '1일 이용권', amount: 5000, minutes: 1440 },
 };
 
 export function getTicketPrices() { return TICKET_PRICES; }
@@ -46,7 +45,7 @@ export async function expireFreeTrial(uid: string) {
 }
 
 // 이용권
-export async function requestTicket(uid: string, type: '30min' | '1hour' | '1day') {
+export async function requestTicket(uid: string, type: '20min' | '1hour') {
   const price = TICKET_PRICES[type];
   const ticket: Ticket = {
     uid, type, status: 'pending',
