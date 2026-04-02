@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[54168,["/saju-taro/_next/static/chunks/0p3xhei1emp6t.js","/saju-taro/_next/static/chunks/0d3shmwh5_nmn.js","/saju-taro/_next/static/chunks/0movxdiz56dt_.js","/saju-taro/_next/static/chunks/09i4fpajulp.t.js"],"default"]
+3:I[39756,["/saju-taro/_next/static/chunks/0p3xhei1emp6t.js","/saju-taro/_next/static/chunks/0d3shmwh5_nmn.js"],"default"]
+4:I[37457,["/saju-taro/_next/static/chunks/0p3xhei1emp6t.js","/saju-taro/_next/static/chunks/0d3shmwh5_nmn.js"],"default"]
+0:{"rsc":["$","$1","c",{"children":[[["$","script","script-0",{"src":"/saju-taro/_next/static/chunks/0movxdiz56dt_.js","async":true}],["$","script","script-1",{"src":"/saju-taro/_next/static/chunks/09i4fpajulp.t.js","async":true}]],["$","$L2",null,{"children":["$","$L3",null,{"parallelRouterKey":"children","template":["$","$L4",null,{}]}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"6--1JrjBXdv33HHgejZwb"}

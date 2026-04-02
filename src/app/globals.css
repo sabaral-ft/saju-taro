@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+:root {
+  --color-gold: #d4a574;
+  --color-deep-purple: #1a0a2e;
+  --color-mystic-blue: #16213e;
+  --color-dark-bg: #0a0a1a;
+  --color-card-bg: #1e1e3f;
+  --color-accent: #8b5cf6;
+  --color-text-primary: #e8e0d6;
+  --color-text-secondary: #a09080;
+}
+
+body {
+  background: var(--color-dark-bg);
+  color: var(--color-text-primary);
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 수학 미지수 x 스타일 */
+.math-x {
+  font-family: 'Playfair Display', 'Times New Roman', serif;
+  font-style: italic;
+  background: linear-gradient(135deg, #c084fc, #f472b6, #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.5));
+  display: inline-block;
+}
+
+.math-x-sm {
+  font-family: 'Playfair Display', 'Times New Roman', serif;
+  font-style: italic;
+  background: linear-gradient(135deg, #c084fc, #f472b6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+/* 타로 카드 플립 애니메이션 */
+.card-flip {
+  perspective: 1000px;
+}
+
+.card-flip-inner {
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.card-flip.flipped .card-flip-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  backface-visibility: hidden;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+/* 카드 등장 애니메이션 */
+@keyframes cardReveal {
+  0% { opacity: 0; transform: scale(0.8) rotateY(90deg); }
+  50% { opacity: 1; transform: scale(1.05) rotateY(0deg); }
+  100% { opacity: 1; transform: scale(1) rotateY(0deg); }
+}
+
+.card-reveal {
+  animation: cardReveal 0.6s ease-out forwards;
+}
+
+/* 글로우 효과 */
+.glow {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), 0 0 60px rgba(139, 92, 246, 0.1);
+}
+
+.glow-gold {
+  box-shadow: 0 0 20px rgba(212, 165, 116, 0.3), 0 0 60px rgba(212, 165, 116, 0.1);
+}
+
+/* 스크롤바 스타일 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 3px;
+}
