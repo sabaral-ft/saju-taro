@@ -2,6 +2,8 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+const TrialTimer = dynamic(() => import('@/components/TrialTimer'), { ssr: false });
 import { recalculateSajuWithNewBalance, analyzeSaju } from '@/lib/saju-engine';
 import type { SajuResult } from '@/lib/saju-engine';
 import { performReading } from '@/lib/saju-taro-matcher';
@@ -557,6 +559,8 @@ export default function ReadingPage() {
 
       {/* Step 2: 통합 결과 (사주 + 타로) */}
       {step === 'result' && sajuResult && (
+        <>
+        <TrialTimer />
         <div className="space-y-6">
           {/* 네비게이션: 메뉴 화면에서만 '정보 다시 입력하기' 표시 */}
           {activeSection === 'menu' && (
@@ -3438,6 +3442,7 @@ export default function ReadingPage() {
 
           {/* 자유질문 섹션 제거됨 */}
         </div>
+        </>
       )}
 
     </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ProtectedLayout from "@/components/ProtectedLayout";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "사주 + 타로 분석",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function ReadingLayout({ children }: { children: React.ReactNode }) {
-  return <ProtectedLayout>{children}</ProtectedLayout>;
+  return <Suspense>{children}</Suspense>;
 }

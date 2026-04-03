@@ -1,5 +1,10 @@
-import { redirect } from 'next/navigation';
-
 export default function HomePage() {
-  redirect('/reading');
+  return (
+    <html>
+      <head>
+        <meta httpEquiv="refresh" content="0;url=/reading/" />
+      </head>
+      <body />
+    </html>
+  );
 }

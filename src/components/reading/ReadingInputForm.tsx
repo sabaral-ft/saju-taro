@@ -42,11 +42,11 @@ export function ReadingInputForm({
   onAnalyze,
 }: ReadingInputFormProps) {
   return (
-    <div className="bg-[#1e1e3f] rounded-2xl p-8 border border-purple-900/30 max-w-lg mx-auto">
-      <h2 className="text-2xl font-bold text-center mb-2 text-purple-300">
+    <div className="bg-[#1e1e3f] rounded-2xl p-4 sm:p-8 border border-purple-900/30 max-w-lg mx-auto">
+      <h2 className="text-xl sm:text-2xl font-bold text-center mb-2 text-purple-300">
         정보 입력란
       </h2>
-      <p className="text-xs text-gray-500 text-center mb-6">
+      <p className="text-xs text-gray-500 text-center mb-4 sm:mb-6">
         BT-<span className="italic font-serif text-sm text-purple-400">𝑥</span> = <span className="text-gray-400">Better Tomorrow - <span className="italic font-serif text-purple-400">𝑥</span><span className="text-gray-500">(미지의 수)</span></span><br />
         오늘보다 나은 내일을 위한 사주 + 타로 통합 분석
       </p>
@@ -291,6 +291,15 @@ function PrivacyConsent({ onAnalyze }: { onAnalyze: () => void }) {
             </p>
           </div>
         )}
+      </div>
+
+      <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-center">
+        <p className="text-amber-400 text-sm font-bold mb-1">⚠️ 재미로 보는 운세입니다</p>
+        <p className="text-gray-400 text-[11px] leading-relaxed">
+          본 서비스는 전통 사주명리학과 타로를 기반으로 한 <span className="text-gray-300">엔터테인먼트 콘텐츠</span>입니다.<br/>
+          분석 결과를 맹신하지 마시고, 중요한 결정은 전문가와 상담하세요.<br/>
+          결과의 정확성을 보장하지 않으며, 이용에 따른 책임은 사용자에게 있습니다.
+        </p>
       </div>
 
       <button

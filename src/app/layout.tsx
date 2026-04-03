@@ -38,12 +38,12 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen">
-        <header className="border-b border-purple-900/30 bg-[#0d0d2b]/80 backdrop-blur-sm sticky top-0 z-50">
+        <header className="border-b border-purple-900/30 bg-[#0d0d2b]/80 backdrop-blur-sm sticky top-0 z-50 relative">
           <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl">🔮</span>
-              <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-amber-400 bg-clip-text text-transparent">
-                BT-<span className="italic font-serif text-2xl">𝑥</span> 사주타로
+            <Link href="/" className="flex items-center gap-2 shrink-0">
+              <span className="text-xl sm:text-2xl">🔮</span>
+              <span className="text-base sm:text-xl font-bold bg-gradient-to-r from-purple-400 to-amber-400 bg-clip-text text-transparent">
+                BT-<span className="italic font-serif">𝑥</span> 사주타로
               </span>
             </Link>
             <NavLinks />

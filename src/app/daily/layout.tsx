@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import ProtectedLayout from "@/components/ProtectedLayout";
 
 export const metadata: Metadata = {
   title: "오늘의 운세",
@@ -7,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function DailyLayout({ children }: { children: React.ReactNode }) {
-  return <ProtectedLayout>{children}</ProtectedLayout>;
+  return <>{children}</>;
 }

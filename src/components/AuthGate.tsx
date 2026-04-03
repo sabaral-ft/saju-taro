@@ -1,83 +1,47 @@
 'use client';
 import { useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { onAuth, getUserProfile, logoutUser } from '@/lib/auth-service';
-import { checkAccess } from '@/lib/ticket-service';
+import { getDeviceId, getTrialState, startTrial, checkAccess } from '@/lib/device-service';
 
-const TRIAL_KEY = 'saju_free_trial';
-const TRIAL_DURATION = 90; // 90초 = 1분 30초
+const TRIAL_DURATION = 90;
 
-function getTrialState(): { started: boolean; remaining: number } {
-  const raw = localStorage.getItem(TRIAL_KEY);
-  if (!raw) return { started: false, remaining: TRIAL_DURATION };
-  const startedAt = parseInt(raw, 10);
-  const elapsed = Math.floor((Date.now() - startedAt) / 1000);
-  const remaining = Math.max(0, TRIAL_DURATION - elapsed);
-  return { started: true, remaining };
-}
-
-function startTrial() {
-  localStorage.setItem(TRIAL_KEY, Date.now().toString());
-}
-
-interface Props {
-  children: ReactNode;
-}
-
-export default function AuthGate({ children }: Props) {
+export default function AuthGate({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const [status, setStatus] = useState<'loading' | 'ok' | 'trial' | 'blocked'>('loading');
+  const [status, setStatus] = useState<'loading' | 'landing' | 'ok' | 'trial' | 'blocked' | 'pending'>('loading');
   const [remaining, setRemaining] = useState(TRIAL_DURATION);
-  const [userName, setUserName] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // 먼저 로그인 상태 확인
-    const unsub = onAuth(async (user) => {
-      if (user) {
-        // 로그인된 사용자
-        setIsLoggedIn(true);
-        const profile = await getUserProfile(user.uid);
-        if (profile) {
-          setUserName(profile.name);
-          setIsAdmin(profile.role === 'admin');
-          if (profile.role === 'admin') { setStatus('ok'); return; }
-        }
-        const access = await checkAccess(user.uid);
-        if (access === 'active') { setStatus('ok'); return; }
-        if (access === 'pending') { setStatus('blocked'); return; }
-      }
-
-      // 비로그인 또는 이용권 없는 사용자 → 무료 체험 체크
-      const trial = getTrialState();
-      if (!trial.started) {
-        // 첫 방문: 체험 시작
-        startTrial();
-        setRemaining(TRIAL_DURATION);
-        setStatus('trial');
-      } else if (trial.remaining > 0) {
-        // 체험 중
+    async function init() {
+      const deviceId = getDeviceId();
+      const access = await checkAccess(deviceId);
+      if (access === 'active') setStatus('ok');
+      else if (access === 'pending') setStatus('pending');
+      else if (access === 'trial') {
+        const trial = getTrialState();
         setRemaining(trial.remaining);
         setStatus('trial');
-      } else {
-        // 체험 만료
+      } else if (access === 'trial_expired') {
         setStatus('blocked');
+      } else {
+        // 첫 방문: 랜딩 페이지 보여주기
+        setStatus('landing');
       }
-    });
-    return unsub;
-  }, [router]);
+    }
+    init();
+  }, []);
+
+  function handleStartTrial() {
+    startTrial();
+    setRemaining(TRIAL_DURATION);
+    setStatus('trial');
+  }
 
   // 타이머
   useEffect(() => {
     if (status !== 'trial') return;
     const timer = setInterval(() => {
       setRemaining(prev => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          setStatus('blocked');
-          return 0;
-        }
+        if (prev <= 1) { clearInterval(timer); setStatus('blocked'); return 0; }
         return prev - 1;
       });
     }, 1000);
@@ -87,9 +51,39 @@ export default function AuthGate({ children }: Props) {
   if (status === 'loading') {
     return (
       <div className="fixed inset-0 bg-gray-950 flex items-center justify-center z-50">
-        <div className="text-center">
-          <div className="text-4xl mb-3 animate-pulse">🔮</div>
-          <div className="text-gray-400 text-sm">로딩 중...</div>
+        <div className="text-4xl animate-pulse">🔮</div>
+      </div>
+    );
+  }
+
+  if (status === 'landing') {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-b from-[#0d0d2b] to-gray-950 flex items-center justify-center z-50 px-4">
+        <div className="text-center max-w-sm">
+          <div className="text-6xl mb-4">🔮</div>
+          <h1 className="text-2xl font-bold text-white mb-2">BT-<span className="italic font-serif">𝑥</span> 사주타로</h1>
+          <p className="text-gray-400 text-sm mb-2">만세력 기반 정밀 사주 분석 + 78장 타로 카드 오행 맞춤 해석</p>
+          <p className="text-purple-400 text-xs mb-8">오늘보다 나은 내일을 위한 사주 + 타로 통합 분석</p>
+
+          <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4 mb-6">
+            <div className="text-amber-400 font-bold text-sm mb-2">✨ 무료 체험</div>
+            <p className="text-gray-300 text-sm">1분 30초 동안 모든 기능을 무료로 체험해보세요</p>
+            <p className="text-gray-500 text-xs mt-1">사주 분석 · 타로 리딩 · 궁합 · 오늘의 운세</p>
+          </div>
+
+          <button
+            onClick={handleStartTrial}
+            className="w-full py-4 bg-gradient-to-r from-purple-500 to-amber-500 text-white font-bold rounded-xl text-base mb-3 hover:opacity-90 transition"
+          >
+            무료 체험 시작하기
+          </button>
+
+          <div className="flex gap-2">
+            <button onClick={() => router.push('/payment')}
+              className="flex-1 py-3 bg-gray-800 border border-gray-700 text-gray-300 rounded-xl text-sm">
+              💎 이용권 구매
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -101,31 +95,23 @@ export default function AuthGate({ children }: Props) {
         <div className="text-center max-w-sm">
           <div className="text-5xl mb-4">⏰</div>
           <h2 className="text-xl font-bold text-white mb-2">무료 체험이 끝났습니다</h2>
-          <p className="text-gray-400 text-sm mb-6">
-            이용권을 구매하시면 무제한으로<br/>사주·타로 분석을 이용하실 수 있습니다.
-          </p>
-          <button
-            onClick={() => router.push('/payment')}
-            className="w-full py-4 bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold rounded-xl text-sm mb-3"
-          >
+          <p className="text-gray-400 text-sm mb-6">이용권을 구매하시면 무제한으로<br/>사주·타로 분석을 이용하실 수 있습니다.</p>
+          <button onClick={() => router.push('/payment')} className="w-full py-4 bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold rounded-xl text-sm mb-3">
             💎 이용권 구매하기
           </button>
-          {!isLoggedIn && (
-            <button
-              onClick={() => router.push('/login')}
-              className="w-full py-3 bg-gray-800 border border-gray-700 text-gray-300 rounded-xl text-sm mb-3"
-            >
-              이미 이용권이 있다면 로그인
-            </button>
-          )}
-          {isLoggedIn && (
-            <button
-              onClick={() => { logoutUser(); window.location.reload(); }}
-              className="text-gray-500 text-sm underline"
-            >
-              로그아웃
-            </button>
-          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (status === 'pending') {
+    return (
+      <div className="fixed inset-0 bg-gray-950 flex items-center justify-center z-50 px-4">
+        <div className="text-center max-w-sm">
+          <div className="text-5xl mb-4">⏳</div>
+          <h2 className="text-xl font-bold text-white mb-2">결제 승인 대기 중</h2>
+          <p className="text-gray-400 text-sm mb-6">관리자가 입금 확인 후 승인합니다.<br/>잠시만 기다려주세요.</p>
+          <button onClick={() => window.location.reload()} className="w-full py-3 bg-gray-800 border border-gray-700 text-gray-300 rounded-xl text-sm">↻ 새로고침</button>
         </div>
       </div>
     );
@@ -133,35 +119,12 @@ export default function AuthGate({ children }: Props) {
 
   return (
     <>
-      {/* 상단 바 */}
-      <div className="fixed top-0 left-0 right-0 z-40 bg-gray-900/95 backdrop-blur border-b border-gray-800 px-4 py-2 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          {isLoggedIn ? (
-            <>
-              <span className="text-sm font-bold text-white">{userName || '사용자'}</span>
-              {isAdmin && <span className="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded">관리자</span>}
-            </>
-          ) : (
-            <span className="text-sm text-gray-400">무료 체험 중</span>
-          )}
+      {status === 'trial' && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-red-500/90 text-white text-center py-1 text-xs font-bold">
+          무료 체험 {remaining}초 남음
         </div>
-        <div className="flex items-center gap-3">
-          {status === 'trial' && (
-            <div className="flex items-center gap-1 bg-red-500/20 border border-red-500/30 px-2 py-1 rounded-lg">
-              <span className="text-red-400 text-xs font-bold">체험 {remaining}초</span>
-            </div>
-          )}
-          {isAdmin && (
-            <button onClick={() => router.push('/admin')} className="text-amber-400 text-xs font-bold">👑 관리</button>
-          )}
-          {isLoggedIn ? (
-            <button onClick={() => { logoutUser(); window.location.reload(); }} className="text-gray-400 text-xs">로그아웃</button>
-          ) : (
-            <button onClick={() => router.push('/login')} className="text-amber-400 text-xs font-bold">로그인</button>
-          )}
-        </div>
-      </div>
-      <div className="pt-10">
+      )}
+      <div className={status === 'trial' ? 'pt-6' : ''}>
         {children}
       </div>
     </>
