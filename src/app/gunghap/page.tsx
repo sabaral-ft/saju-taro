@@ -617,7 +617,7 @@ export default function GunghapPage() {
               <div key={label} className="bg-[#1e1e3f] rounded-xl p-4 border border-purple-900/30 text-center">
                 <div className="text-sm text-gray-400 mb-2">{label}</div>
                 <div className="flex justify-center gap-1 mb-2">
-                  {(['year', 'month', 'day', 'hour'] as const).map((key) => (
+                  {(['hour', 'day', 'month', 'year'] as const).map((key) => (
                     <div key={key} className="text-center">
                       <span className="text-lg font-bold" style={{ color: OHAENG_COLOR[saju[key].cheonganOhaeng] }}>
                         {saju[key].cheongan}
@@ -625,7 +625,7 @@ export default function GunghapPage() {
                       <span className="text-lg font-bold" style={{ color: OHAENG_COLOR[saju[key].jijiOhaeng] }}>
                         {saju[key].jiji}
                       </span>
-                      {key !== 'hour' && <span className="text-gray-600 mx-0.5">|</span>}
+                      {key !== 'year' && <span className="text-gray-600 mx-0.5">|</span>}
                     </div>
                   ))}
                 </div>

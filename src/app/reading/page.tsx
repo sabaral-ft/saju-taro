@@ -793,7 +793,8 @@ export default function ReadingPage() {
                 <p className="text-sm text-gray-500 mb-1">겉으로 안 보이지만 마음속에 숨어있는 성격이에요</p>
                 <p className="text-xs text-gray-600 mb-2">지지(地支) 안에 숨어있는 글자를 지장간이라 해요. 겉 성격과 속 성격이 다를 수 있는 이유!</p>
                 <div className="grid grid-cols-4 gap-2">
-                  {(['연주', '월주', '일주', '시주'] as const).map((label, idx) => {
+                  {(['시주', '일주', '월주', '연주'] as const).map((label, i) => {
+                    const idx = [3, 2, 1, 0][i];
                     const jg = sajuResult.jangganSipseongs[idx];
                     const info = SIPSEONG_EASY[jg.sipseong];
                     return (
