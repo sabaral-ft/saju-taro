@@ -5,7 +5,7 @@ import { getDeviceId, checkAccess } from '@/lib/device-service';
 
 const TRIAL_KEY = 'saju_free_trial';
 const TICKET_KEY = 'saju_ticket_expires';
-const TRIAL_DURATION = 90;
+const TRIAL_DURATION = 180;
 
 export default function TrialTimer() {
   const router = useRouter();

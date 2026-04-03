@@ -4,7 +4,7 @@ import { doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs } fro
 
 const DEVICE_KEY = 'saju_device_id';
 const TRIAL_KEY = 'saju_free_trial';
-const TRIAL_DURATION = 90; // 90초
+const TRIAL_DURATION = 180; // 3분
 
 // 기기 고유 ID 생성/조회
 export function getDeviceId(): string {
