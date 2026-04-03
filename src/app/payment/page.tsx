@@ -17,7 +17,11 @@ export default function PaymentPage() {
     setDeviceId(id);
     checkAccess(id).then(access => {
       console.log('access:', access);
-      if (access === 'active') setStep('active');
+      if (access === 'active') {
+        // TrialTimer가 인식하도록 localStorage에도 저장 (1시간)
+        localStorage.setItem('saju_ticket_expires', (Date.now() + 3600000).toString());
+        setStep('active');
+      }
       else if (access === 'pending') setStep('waiting');
       else setStep('select');
     }).catch(() => setStep('select'));
@@ -71,7 +75,10 @@ export default function PaymentPage() {
             <p className="text-gray-500 text-xs mb-6">보통 몇 분 이내에 처리됩니다.</p>
             <button onClick={async () => {
               const access = await checkAccess(deviceId);
-              if (access === 'active') { setStep('active'); }
+              if (access === 'active') {
+                localStorage.setItem('saju_ticket_expires', (Date.now() + 3600000).toString());
+                setStep('active');
+              }
               else { alert('아직 승인 대기 중입니다. 잠시 후 다시 시도해주세요.'); }
             }} className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold rounded-xl text-sm mb-3">↻ 승인 확인하기</button>
             <button onClick={() => router.push('/reading/')} className="text-gray-500 text-sm underline">돌아가기</button>
