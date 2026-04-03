@@ -42,7 +42,7 @@ export function ResultMenu({ sajuResult, daeunResult, fiveYearSeun, samjaeResult
             <span className="text-sm font-bold text-purple-300">내 사주팔자</span>
           </div>
           <div className="flex gap-1.5 mb-2">
-            {[sajuResult.year, sajuResult.month, sajuResult.day, sajuResult.hour].map((p, i) => (
+            {[sajuResult.hour, sajuResult.day, sajuResult.month, sajuResult.year].map((p, i) => (
               <div key={i} className="text-center">
                 <div className="text-base font-bold" style={{ color: OHAENG_COLOR[p.cheonganOhaeng as Ohaeng] }}>{p.cheongan}</div>
                 <div className="text-base font-bold" style={{ color: OHAENG_COLOR[p.jijiOhaeng as Ohaeng] }}>{p.jiji}</div>
