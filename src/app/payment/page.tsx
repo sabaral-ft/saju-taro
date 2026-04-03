@@ -58,7 +58,7 @@ export default function PaymentPage() {
             <div className="text-5xl mb-4">✅</div>
             <h2 className="text-xl font-bold text-white mb-2">이용권이 활성화되어 있습니다</h2>
             <p className="text-gray-400 text-sm mb-6">사주·타로 분석을 무제한으로 이용하세요</p>
-            <button onClick={() => router.push('/reading/')} className="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl">사주타로 시작하기</button>
+            <button onClick={() => router.push('/reading/?step=result')} className="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl">사주타로 시작하기</button>
           </div>
         )}
 
