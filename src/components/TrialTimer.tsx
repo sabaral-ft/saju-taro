@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { getDeviceId, checkAccess } from '@/lib/device-service';
 
 const TRIAL_KEY = 'saju_free_trial';
 const TICKET_KEY = 'saju_ticket_expires';
@@ -12,31 +13,44 @@ export default function TrialTimer() {
   const [remaining, setRemaining] = useState(TRIAL_DURATION);
 
   useEffect(() => {
-    // 이용권 있는지 체크
-    const ticketExpires = localStorage.getItem(TICKET_KEY);
-    if (ticketExpires && parseInt(ticketExpires) > Date.now()) {
-      setStatus('ok');
-      return;
-    }
+    async function check() {
+      // 1) localStorage 이용권 체크
+      const ticketExpires = localStorage.getItem(TICKET_KEY);
+      if (ticketExpires && parseInt(ticketExpires) > Date.now()) {
+        setStatus('ok');
+        return;
+      }
 
-    // 체험 체크
-    const raw = localStorage.getItem(TRIAL_KEY);
-    if (!raw) {
-      // 결과 보는 시점에 체험 시작
-      localStorage.setItem(TRIAL_KEY, Date.now().toString());
-      setRemaining(TRIAL_DURATION);
-      setStatus('trial');
-    } else {
-      const startedAt = parseInt(raw, 10);
-      const elapsed = Math.floor((Date.now() - startedAt) / 1000);
-      const rem = Math.max(0, TRIAL_DURATION - elapsed);
-      if (rem > 0) {
-        setRemaining(rem);
+      // 2) Firebase 이용권 체크
+      try {
+        const deviceId = getDeviceId();
+        const access = await checkAccess(deviceId);
+        if (access === 'active') {
+          localStorage.setItem(TICKET_KEY, (Date.now() + 3600000).toString());
+          setStatus('ok');
+          return;
+        }
+      } catch {}
+
+      // 3) 무료 체험 체크
+      const raw = localStorage.getItem(TRIAL_KEY);
+      if (!raw) {
+        localStorage.setItem(TRIAL_KEY, Date.now().toString());
+        setRemaining(TRIAL_DURATION);
         setStatus('trial');
       } else {
-        setStatus('blocked');
+        const startedAt = parseInt(raw, 10);
+        const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+        const rem = Math.max(0, TRIAL_DURATION - elapsed);
+        if (rem > 0) {
+          setRemaining(rem);
+          setStatus('trial');
+        } else {
+          setStatus('blocked');
+        }
       }
     }
+    check();
   }, []);
 
   useEffect(() => {
